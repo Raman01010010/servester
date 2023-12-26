@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const credentials = require("./middleware/credential");
 const { initSocket } = require("./Socs");
 
-const PORT = process.env.PORT||3500;
+const PORT = process.env.PORT|| 3500;
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 connectDB();
@@ -43,6 +43,7 @@ app.use("/chat", require("./routes/chat"));
 app.use("/notif", require("./routes/notif"));
 
 app.use("/post", require("./routes/post"));
+app.use("/api", require("./routes/api"));
 
 app.use("/uploadprofileimage", require("./routes/uploadprofileimage"));
 app.use("/connect", require("./routes/connectRoutes"));

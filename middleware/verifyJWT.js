@@ -1,3 +1,4 @@
+
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
 const verifyJWT=(req,res,next)=>{
@@ -12,6 +13,7 @@ const verifyJWT=(req,res,next)=>{
             if(err) return res.sendStatus(403)//invalid token
             req.user=decoded.UserInfo.email
             req.roles=decoded.UserInfo.roles
+            req.userid=decoded.UserInfo.userid
             console.log("verified")
             console.log(req.user)
             next()

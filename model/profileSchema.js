@@ -40,12 +40,13 @@ const profileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'job'
       },
+
+      accepted: {
+        type: Boolean,
+        default: false,
+      },
       userID:{
         type:String
       },
-      accepted:{
-        type:String,
-        default:"Applied",
-      }
 });
 module.exports = mongoose.model('profile', profileSchema);

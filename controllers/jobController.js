@@ -99,7 +99,7 @@ const showjob = async (req, res) => {
     } else {
       // Fetch paginated jobs without sorting
       const startIndex = (page - 1) * pageSize;
-      sortedJobs = await job.find(filter).sort({ /* your sorting criteria */ }).skip(startIndex).limit(pageSize);
+      sortedJobs = await job.find(filter).sort({ /* your sorting criteria */ }).skip(startIndex)//.limit(pageSize);
     }
 
     // Find jobs in trending
@@ -357,7 +357,51 @@ const hasApplied = jobData.applicants.includes(userId);
   }
 };
 
-module.exports = Singlejob;
+const Accept = async (req, res) => {
+  const profileid = req.body.applicationId;
+  console.log(profileid);
+  const jobId = req.body.jobid;
+console.log(jobId);
+  try {
+    const profiles = await profile.findById(profileid);
+    console.log(profiles);
+    const jobs = await job.findOne({ _id: jobId });
+    // console.log(jobs);
+    const jobberid = jobs.jobberid;
+// console.log(jobberid);
+
+    if (!profiles) {
+      console.log("viv")
+      return res.status(404).json({ message: 'Applicant not found' });
+    }
+console.log(profiles.accepted);
+    // Check if the jobId is not already in the accepted array
+    if (profiles.accepted === false) {
+      console.log("hi");
+      profiles.accepted = true;
+      await profiles.save();
+    
+      await sendNotification(
+        profiles.userID,
+        `You are selected for further rounds by ${jobs.company}`,
+        
+        `/formsubmitted/${profiles.jobid}/${jobberid}`,
+        'job',
+      );
+      console.log(`Applicant ${profiles.userID} has been accepted for job ${jobId}.`);
+      res.status(200).json({ message: 'Applicant accepted successfully' });
+    } else {
+      console.log("viv2")
+
+      // JobId is already in the accepted array
+      res.status(400).json({ message: 'Applicant has already been accepted for this job' });
+    }
+  } catch (error) {
+    console.error('Error accepting applicant: ', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // locationonsite
-module.exports={create,showjob,myjob,Application,location,company,myjobapplication,FormSubmitted,filterskill,Jobcomment,getJobComments,Singlejob}
+module.exports={create,showjob,myjob,Application,location,company,myjobapplication,FormSubmitted,filterskill,Jobcomment,getJobComments,Singlejob,Accept}
